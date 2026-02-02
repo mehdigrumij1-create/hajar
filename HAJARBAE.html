@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HAJAR will you be my Valentine?</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<style>
+:root {
+  --bg1: #ffd6e7;
+  --bg2: #ffeef6;
+  --card: #ffffff;
+  --yes: #ff3b7a;
+  --yesHover: #ff1f68;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+
+/* Confetti canvas */
+#confettiCanvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Card */
+.card {
+  width: min(720px, 92vw);
+  padding: 30px 24px 34px;
+  background: var(--card);
+  border-radius: 26px;
+  text-align: center;
+  box-shadow: 0 22px 55px rgba(0,0,0,.15);
+}
+
+/* Image (round + romantic) */
+.art {
+  width: 230px;
+  height: 230px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  display: block;
+  box-shadow: 0 16px 35px rgba(0,0,0,.22);
+  border: 4px solid #fff;
+}
+
+/* Title */
+h1 {
+  font-size: clamp(26px, 4vw, 42px);
+  margin: 12px 0 26px;
+}
+
+/* Buttons zone */
+.button-zone {
+  position: relative;
+  width: 320px;
+  height: 130px;
+  margin: 0 auto;
+}
+
+/* Buttons */
+button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 16px 30px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0,0,0,.15);
+  user-select: none;
+}
+
+#yesBtn {
+  left: 0;
+  background: var(--yes);
+  color: white;
+}
+
+#yesBtn:hover {
+  background: var(--yesHover);
+}
+
+#noBtn {
+  right: 0;
+  background: #e5e7eb;
+  color: #111;
+}
+
+/* Hint */
+.hint {
+  margin-top: 14px;
+  font-size: 13px;
+  opacity: .7;
+}
+
+/* Result */
+.result {
+  display: none;
+  margin-top: 20px;
+}
+
+.result h2 {
+  font-size: 38px;
+  margin-bottom: 12px;
+}
+
+.fireworks {
+  width: 320px;
+  max-width: 90%;
+
+}
+
+.fireworks {
+  border-radius: 18px;
+  box-shadow: 0 16px 35px rgba(0,0,0,.25);
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+
+<main class="card">
+
+  <!-- 📸 IMAGE (FROM YOUR LINK) -->
+  <img
+    class="art"
+    src="https://i.postimg.cc/KR2RPrsz/IMG-5690.jpg"
+    alt="Hajar in Paris"
+  />
+
+  <h1>HAJAR will you be my valentine?</h1>
+
+  <section class="button-zone" id="zone">
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+  </section>
+
+  <div class="hint" id="hint">U’re being a little shy… I like that 😈</div>
+
+  <section class="result" id="result">
+    <h2>YAY! 🎉</h2>
+   <img
+  class="fireworks"
+  src="https://i.postimg.cc/TwSXb2pZ/tenor.gif"
+  alt="Love gif"
+/>
+
+  </section>
+
+</main>
+
+<script>
+const zone = document.getElementById("zone");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const result = document.getElementById("result");
+const hint = document.getElementById("hint");
+
+/* Confetti */
+const canvas = document.getElementById("confettiCanvas");
+const confettiInstance = confetti.create(canvas, { resize: true, useWorker: true });
+
+function launchConfetti() {
+  confettiInstance({
+    particleCount: 300,
+    spread: 140,
+    startVelocity: 60,
+    origin: { x: 0.5, y: 0.5 }
+  });
+}
+
+/* NO runs away but stays inside */
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+zone.addEventListener("pointermove", e => {
+  const z = zone.getBoundingClientRect();
+  const b = noBtn.getBoundingClientRect();
+  const d = Math.hypot(
+    (b.left + b.width / 2) - e.clientX,
+    (b.top + b.height / 2) - e.clientY
+  );
+
+  if (d < 120) {
+    let x = Math.random() * (z.width - b.width);
+    let y = Math.random() * (z.height - b.height);
+    noBtn.style.left = clamp(x, 140, z.width - b.width) + "px";
+    noBtn.style.top = clamp(y, 10, z.height - b.height) + "px";
+  }
+});
+
+/* YES click */
+yesBtn.addEventListener("click", () => {
+  zone.style.display = "none";
+  hint.style.display = "none";
+  result.style.display = "block";
+  launchConfetti();
+});
+</script>
+
+</body>
+</html>
